@@ -1,5 +1,6 @@
 // lib/sequelize.js
 const { Sequelize } = require('sequelize');
+import tedious from 'tedious'; 
 const path = require('path');
 require('dotenv').config({ path: '.env.local' });
 

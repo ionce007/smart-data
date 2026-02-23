@@ -1,4 +1,5 @@
 const sequelize = require('./sequelize');
+import tedious from 'tedious'; 
 
 // 数据库工具函数
 const db = {
