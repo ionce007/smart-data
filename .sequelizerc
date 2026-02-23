@@ -1,0 +1,27 @@
+/*const path = require('path');
+
+module.exports = {
+  'config': path.resolve('./lib', 'sequelize.js'),
+  'models-path': path.resolve('./models'),
+  'seeders-path': path.resolve('./seeders'),
+  'migrations-path': path.resolve('./migrations')
+};*/
+// .sequelizerc
+/*
+const path = require('path');
+
+module.exports = {
+  'config': path.resolve('config', 'config.js'),  // 指向新的配置文件
+  'models-path': path.resolve('./models'),
+  'seeders-path': path.resolve('./seeders'),
+  'migrations-path': path.resolve('./migrations')
+};*/
+// .sequelizerc
+const path = require('path');
+
+module.exports = {
+  'config': path.resolve('config', 'config.js'),  // 确保指向正确的配置文件
+  'models-path': path.resolve('models'),
+  'seeders-path': path.resolve('seeders'),
+  'migrations-path': path.resolve('migrations')
+};

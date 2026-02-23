@@ -1,0 +1,12 @@
+.env
+.env.local
+.next
+/.next
+/.next/*.*
+/node_modules
+/app/node_modules
+/.idea
+/.vscode
+logs
+/logs/*.*
+

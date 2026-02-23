@@ -1,0 +1,40 @@
+{
+  "name": "dashboard",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@sequelize/mssql": "^7.0.0-alpha.48",
+    "bcryptjs": "^3.0.3",
+    "body-parser": "^2.2.2",
+    "cors": "^2.8.6",
+    "cross-env": "^10.1.0",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "json-rpc-protocol": "^0.13.2",
+    "mysql2": "^3.17.2",
+    "next": "^16.1.6",
+    "pg": "^8.18.0",
+    "pg-hstore": "^2.3.4",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "sequelize": "^6.37.7",
+    "sqlite3": "^5.1.7",
+    "tedious": "^19.2.1",
+    "uuid": "^13.0.0",
+    "ws": "^8.19.0"
+  },
+  "devDependencies": {
+    "eslint": "^10.0.0",
+    "eslint-config-next": "^16.1.6"
+  }
+}
