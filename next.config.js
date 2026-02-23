@@ -1,14 +1,14 @@
 /** @type {import('next').NextConfig} */
-/*
+
 const nextConfig = {
   reactStrictMode: true,
 }
 
 module.exports = nextConfig
-*/
+
 
 /** @type {import('next').NextConfig} */
-const nextConfig = {
+/*const nextConfig = {
   // 如果是 turbopack 的问题，可以尝试禁用
   turbo: {
     enabled: false, // 全局关闭 Turbopack
@@ -33,3 +33,4 @@ const nextConfig = {
 }
 
 module.exports = nextConfig
+*/
