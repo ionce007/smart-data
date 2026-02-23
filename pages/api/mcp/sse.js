@@ -1,5 +1,6 @@
 // pages/api/mcp/sse.js
-import { getMCPServer } from '../../mcp/server';
+//import { getMCPServer } from '../../mcp/server';
+import { getMCPServer } from '../../../mcp/server';
 
 // 全局MCP服务器实例
 let mcpServer = null;
