@@ -10,10 +10,12 @@ module.exports = nextConfig
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // 如果是 turbopack 的问题，可以尝试禁用
-  experimental: {
-    turbo: false
+  turbo: {
+    enabled: false, // 全局关闭 Turbopack
   },
-
+  experimental: {
+    esmExternals: 'loose' // 告诉 Next.js 尝试自动修复 ESM 错误
+  },
   // 确保正确处理 node 模块
   webpack: (config, { isServer }) => {
     if (!isServer) {

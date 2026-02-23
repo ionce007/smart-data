@@ -1,4 +1,3 @@
-// pages/api/mcp/messages.js
 import { getMCPServer } from '../../../mcp/server';
 
 let mcpServer = null;

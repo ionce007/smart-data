@@ -1,6 +1,8 @@
 {
   "compilerOptions": {
     "baseUrl": ".",
+    "module": "esnext", // 或 "es2020"，确保保留 ES Module 语法
+    "esModuleInterop": true,
     "paths": {
       "@/*": ["./*"]
     }

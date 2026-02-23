@@ -1,12 +1,12 @@
 // mcp/server/index.js
 const EventEmitter = require('events');
-const { v4: uuidv4 } = require('uuid');
+//const { v4: uuidv4 } = require('uuid');
 const JSONRPC = require('../protocol/jsonrpc');
 const UserTools = require('../tools/user-tools');
 const PostTools = require('../tools/post-tools');
 const DatabaseTools = require('../tools/db-tools');
 const SSETransport = require('../protocol/sse-transport');
-
+import { v4 as uuidv4 } from 'uuid';
 /**
  * MCP服务器主类
  * 处理JSON-RPC请求、工具注册和调用、客户端管理
