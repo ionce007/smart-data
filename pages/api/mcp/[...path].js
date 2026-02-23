@@ -184,13 +184,29 @@ export default async function handler(req, res) {
 
     // 获取服务器信息
     if (fullPath === 'info' && req.method === 'GET') {
-      res.json({
-        name: process.env.MCP_SERVER_NAME || 'NextJS Sequelize MCP',
-        version: process.env.MCP_SERVER_VERSION || '1.0.0',
-        modules: Array.from(moduleRegistry.modules.keys()),
-        tools: moduleRegistry.getToolsList().length,
-        connections: sseTransport.getConnectionCount()
-      });
+      let json = {};
+      try {
+        console.log('进入/api/mcp/info ......');
+        json = {
+          name: process.env.MCP_SERVER_NAME || 'NextJS Sequelize MCP',
+          version: process.env.MCP_SERVER_VERSION || '1.0.0',
+          modules: Array.from(moduleRegistry.modules.keys()),
+          tools: moduleRegistry.getToolsList().length,
+          connections: sseTransport.getConnectionCount()
+        }
+      }
+      catch (e) {
+        json = {
+          name: 'error',
+          version: '1.1.1.1',
+          modules: null,
+          tools: 0,
+          connections: 0,
+          msg: e.message
+        }
+      }
+      console.log(json)
+      res.json(json);
     }
 
     // 健康检查
