@@ -6,7 +6,7 @@ const UserTools = require('../tools/user-tools');
 const PostTools = require('../tools/post-tools');
 const DatabaseTools = require('../tools/db-tools');
 const SSETransport = require('../protocol/sse-transport');
-import { v4 as uuidv4 } from 'uuid';
+//import { v4 as uuidv4 } from 'uuid';
 /**
  * MCP服务器主类
  * 处理JSON-RPC请求、工具注册和调用、客户端管理
@@ -89,7 +89,7 @@ class MCPServer extends EventEmitter {
 
     // 处理SSE连接
     handleSSEConnection(req, res) {
-        const clientId = uuidv4();
+        const clientId = new Date().getTime() + ''; // uuidv4();
         this.sseTransport.handleConnection(req, res, clientId);
 
         // 发送初始化信息
