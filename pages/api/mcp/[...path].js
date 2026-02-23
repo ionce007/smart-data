@@ -1,7 +1,7 @@
 // pages/api/mcp/[...path].js
 import { moduleRegistry } from './modules';
 import { authMiddleware } from './middleware/auth';
-import { loggerMiddleware, logger } from './middleware/logger';
+//import { loggerMiddleware, logger } from './middleware/logger';
 import SSETransport from '../../../mcp/protocol/sse-transport';
 
 // 初始化模块注册器
