@@ -1,5 +1,5 @@
 const sequelize = require('./sequelize');
-import tedious from 'tedious'; 
+import tedious from 'tedious'; //显式导入，避免EdgeOne打包时的错误
 
 // 数据库工具函数
 const db = {

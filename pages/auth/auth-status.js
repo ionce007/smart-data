@@ -1,17 +1,69 @@
 import Layout from '../../components/Layout'
 import { useState, useEffect } from 'react';
 
-export default function Settings() {
-  const [status, setStatus] = useState('checking');
+export default function XHSAuthStatus() {
   const [details, setDetails] = useState(null);
-  
+
+  useEffect(() => {
+    let mounted = true;
+    //let intervalId;
+
+    const checkStatus = async () => {
+      try {
+        const res = await fetch('/api/adxhs/auth-status');
+        if (!res.ok) throw new Error('Failed to fetch');
+
+        const data = await res.json();
+        if (mounted) {
+          setDetails(data);
+        }
+      } catch (error) {
+        if (mounted) {
+          setDetails(null);
+        }
+      }
+    };
+
+    // 立即检查一次
+    checkStatus();
+
+    // 每30秒检查一次
+    //intervalId = setInterval(checkStatus, 180 * 1000);
+
+    return () => {
+      mounted = false;
+      //clearInterval(intervalId);
+    };
+  }, []);
+
+  const render = (code) => {
+    if (code === 1) {
+      return (
+        <div>
+          <div>
+            <span className="block text-sm font-medium text-gray-700 mb-2">
+              授权状态
+            </span>
+            <div className="bg-white rounded-lg px-4 py-4">{details?.status}</div>
+          </div>
+          <div>
+            <button type="button" className="px-4 py-1 bg-red-600 text-white rounded-md hover:bg-red-700">授权</button>
+          </div>
+        </div>
+      )
+    }
+    else{
+      return (<div></div>)
+    }
+  }
+
   return (
     <Layout>
       <div className="space-y-6">
         <h2 className="text-2xl font-bold text-gray-800">授权状态</h2>
-
         <div className="bg-white rounded-lg shadow">
           <div className="p-6">
+            {render(details?.code)}
             <form className="space-y-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">

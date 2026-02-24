@@ -10,9 +10,9 @@ module.exports = nextConfig
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // 核心：禁用 Turbopack（Next.js 16 专属配置）
-  turbo: {
+  /*turbo: {
     enabled: false, // 全局关闭 Turbopack
-  },
+  },*/
   // 可选：显式指定 Webpack 配置（确保 Webpack 生效）
   webpack: (config, { dev, isServer }) => {
     if (!isServer) {
@@ -22,6 +22,7 @@ const nextConfig = {
         ...(config.externals || []),
         'tedious',      // 主要的 MSSQL 驱动
         'mssql',        // 如果你直接用了 mssql 包
+        'uuid'
         // 如果使用了其他数据库驱动，也列在这里
       ];
       // 客户端不打包 node 模块
@@ -31,6 +32,7 @@ const nextConfig = {
         net: false,
         tls: false,
         sequelize: false,
+        uuid: false,
       };
     }
     // 保留原有 Webpack 配置（如有），无需额外修改

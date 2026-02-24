@@ -17,7 +17,6 @@ export default function MCPStatusIndicator() {
                 const data = await res.json();
 
                 if (mounted) {
-                    console.log('data = ', data);
                     setStatus('running');
                     setDetails({
                         tools: data?.tools || 0,
@@ -37,7 +36,7 @@ export default function MCPStatusIndicator() {
         checkStatus();
 
         // 每30秒检查一次
-        intervalId = setInterval(checkStatus, 30000);
+        intervalId = setInterval(checkStatus, 180*1000);
 
         return () => {
             mounted = false;
@@ -66,23 +65,9 @@ export default function MCPStatusIndicator() {
 
     return (
         <div
-            style={{
-                position: 'fixed',
-                top: 16,
-                right: 300,
-                background: getStatusColor(),
-                color: 'white',
-                padding: '8px 12px',
-                borderRadius: '20px',
-                fontSize: 12,
-                fontFamily: 'monospace',
-                zIndex: 11,
-                boxShadow: '0 2px 5px rgba(0,0,0,0.2)',
-                cursor: 'pointer'
-            }}
+            style={{ position: 'fixed', top: 16, right: 300, background: getStatusColor(), color: 'white', padding: '8px 12px', borderRadius: '20px', fontSize: 12, fontFamily: 'monospace', zIndex: 11, boxShadow: '0 2px 5px rgba(0,0,0,0.2)', cursor: 'pointer' }}
             onClick={() => window.open('/api/mcp/info', '_blank')}
-            title="点击查看详细信息"
-        >
+            title="点击查看详细信息">
             {getStatusText()}
             {details?.connections > 0 && ` | ${details.connections}连接`}
         </div>

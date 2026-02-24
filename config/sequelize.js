@@ -1,6 +1,6 @@
 // lib/sequelize.js
 const { Sequelize } = require('sequelize');
-import tedious from 'tedious'; 
+import tedious from 'tedious'; //显式导入，避免EdgeOne打包时的错误
 const path = require('path');
 require('dotenv').config({ path: '.env.local' });
 

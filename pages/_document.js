@@ -8,17 +8,6 @@ export default function Document() {
   useEffect(() => {
     // 初始化数据库
     initializeDatabase();
-
-    // 检查 MCP 服务器状态
-    /*fetch('/api/mcp/info')
-      .then(res => res.json())
-      .then(data => {
-        console.log('data = ', data);
-        setMcpStatus(`running (${data.tools.length} tools)`);
-      })
-      .catch(() => {
-        setMcpStatus('stopped');
-      });*/
   }, []);  
   
   return (

@@ -20,7 +20,7 @@ export class LoggerMiddleware {
   constructor(options = {}) {
     this.options = {
       logToConsole: true,
-      logToFile: process.env.NODE_ENV === 'production',
+      logToFile: process.env.LOG_TO_FILE === 'true', //process.env.NODE_ENV === 'production',
       logDir: path.join(process.cwd(), 'logs'),
       logLevel: process.env.LOG_LEVEL || 'INFO',
       maxLogSize: 10 * 1024 * 1024, // 10MB
@@ -81,7 +81,6 @@ export class LoggerMiddleware {
    */
   async _writeToFile(logPath, logEntry) {
     if (!this.options.logToFile) return;
-
     try {
       const logLine = JSON.stringify(logEntry) + '\n';
       
@@ -125,7 +124,6 @@ export class LoggerMiddleware {
    */
   async log(level, message, data = {}) {
     if (!this._shouldLog(level)) return;
-
     const logEntry = this._formatLogEntry(level, message, data);
 
     // 控制台输出
@@ -346,7 +344,7 @@ export class LoggerMiddleware {
 // 创建单例实例
 const loggerInstance = new LoggerMiddleware({
   logToConsole: true,
-  logToFile: process.env.NODE_ENV === 'production',
+  logToFile: process.env.LOG_TO_FILE === 'true', // process.env.NODE_ENV === 'production',
   logLevel: process.env.LOG_LEVEL || 'INFO'
 });
 

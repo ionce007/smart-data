@@ -20,7 +20,7 @@ export default function Sidebar({ collapsed }) {
       label: '小红书', 
       icon: 'M8 3H6C4.34315 3 3 4.34315 3 6V18C3 19.6569 4.34315 21 6 21H18C19.6569 21 21 19.6569 21 18V6C21 4.34315 19.6569 3 18 3H16 M8 8.5C8 7.11929 9.11929 6 10.5 6C11.8807 6 13 7.11929 13 8.5C13 9.88071 11.8807 11 10.5 11C9.11929 11 8 9.88071 8 8.5Z M16 10C14.8954 10 14 10.8954 14 12C14 13.1046 14.8954 14 16 14C17.1046 14 18 13.1046 18 12C18 10.8954 17.1046 10 16 10Z M10 14H14 M10 17H14',
       children: [
-        { id: 'auth-status', label: '授权状态', path: './auth/auth-status', icon: 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z' },
+        { id: 'auth-status', label: '授权状态', path: '/auth/auth-status', icon: 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z' },
         { id: 'user-add', label: '添加用户', path: '/user-add', icon: 'M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z' },
         { id: 'user-roles', label: '角色权限', path: '/user-roles', icon: 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z' }
       ]
@@ -283,23 +283,6 @@ export default function Sidebar({ collapsed }) {
           {menuItems.map(item => renderMenuItem(item, 0))}
         </div>
       </nav>
-
-      {/*<div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-200">
-        {collapsed ? (
-          <div className="flex justify-center">
-            <div className="text-xs text-gray-500">
-              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
-          </div>
-        ) : (
-          <div className="text-xs text-gray-500 text-center">
-            <p>系统版本 v1.0.0</p>
-            <p className="mt-1">© 2024 Admin System</p>
-          </div>
-        )}
-      </div>*/}
     </aside>
   )
 }
