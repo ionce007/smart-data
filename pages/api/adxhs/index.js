@@ -12,16 +12,21 @@ export default async function handler(req, res) {
         switch (method) {
             case 'GET':
                 const parsedUrl = new URL(req.url, `http://${req.headers.host}`);// url.parse(req.url, true);
-                if (parsedUrl.pathname === CALLBACK_PATH) {
-                    const authCode = parsedUrl.query?.auth_code || '';
-                    const state = parsedUrl.query?.state || 'ADXHS'; // 防CSRF，如有则校验
+                if (parsedUrl.pathname.toLowerCase().trim() === CALLBACK_PATH.toLowerCase().trim()) {
+                    const authCode = req.query?.auth_code || '';
+                    const state = req.query?.state || 'ADXHS'; // 防CSRF，如有则校验
                     if(!authCode){
                         console.log('authCode值为空');
                         res.json({success: false, code: -1, msg: '获取的authCode值为空。'});
                         return;
                     }
                     const token = await adxhs.getAccessTokenFromAdxhs(authCode);
-                    if(token.code === 0 ) await adxhs.saveAccessToken(token.data, 'adxhs');
+                    if(token.code === 0 ) {
+                        const data = await adxhs.saveAccessToken(token.data, 'adxhs');
+                        if(data) res.json({code: data.ocde, success: false, msg: data.msg});
+                        else res.json({code: -1, success: false, msg: 'Token存档失败！'});
+                    }
+                    res.json({code: 0, success: true, msg: 'ok'});
                     return token;
                 }
                 break;

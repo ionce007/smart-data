@@ -60,12 +60,12 @@ async function saveAccessToken(token, platform = 'adxhs') {
         let newToken = {}
         if (await isExistToken(platform)) {
             let dbToken = await db.Auth.findOne({ where: { platform: platform }, raw: true });
-            newToken.token = JSON.stringify(token.data);
+            newToken.token = JSON.stringify(token);
             newToken.platform = platform;
             db.Auth.updata(newToken)
         }
         else {
-            newToken = await db.Auth.Create({ platform: platform, token: JSON.stringify(token.data) });
+            newToken = await db.Auth.create({ platform: platform, token: JSON.stringify(token) });
         }
         return {code: 0, success: true, msg: '成功', data: newToken };
     }
@@ -76,7 +76,7 @@ async function saveAccessToken(token, platform = 'adxhs') {
 }
 function isAccessTokenExpired(token, platform = 'adxhs'){
     try{
-        const expiredDate = util.addDate(token.token.update_time, token.token.access_token_expires_in, 'second');
+        const expiredDate = util.addDate(new Date(token.update_time), token.access_token_expires_in, 'second');
         return expiredDate <= new Date();
     }
     catch(error){
@@ -86,7 +86,7 @@ function isAccessTokenExpired(token, platform = 'adxhs'){
 }
 function isRefreshTokenExpired(token, platform = 'adxhs'){
     try{
-        const expiredDate = util.addDate(token.token.update_time, token.token.refresh_token_expires_in, 'second');
+        const expiredDate = util.addDate(new Date(token.update_time), token.refresh_token_expires_in, 'second');
         return expiredDate <= new Date();
     }
     catch(error){

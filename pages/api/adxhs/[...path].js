@@ -34,11 +34,10 @@ export default async function handler(req, res) {
                     if(auth.code === -2) data = { code: 1, status: '未授权', }
                     else if(auth.code === -1) data = { code: -1, status: '系统错误'}
                     else{
-                        if(adXHS.isAccessTokenExpired(auth.token)) {
-                            const tokenExpired = util.addDate(auth.token.update_time, auth.token.access_token_expires_in, 'second');
-                            const refreshTokenExpired = util.addDate(auth.token.update_time, auth.token.refresh_token_expires_in, 'second');
-                            data = { code: 2, status: 'Token过期', expired: expiredDate, refreshEdpired: refreshTokenExpired }
-                        }
+                        const tokenExpired = util.addDate(new Date(auth.data.update_time), auth.data.access_token_expires_in, 'second');
+                        const refreshTokenExpired = util.addDate(new Date(auth.data.update_time), auth.data.refresh_token_expires_in, 'second');
+                        if(adXHS.isAccessTokenExpired(auth.data)) data = { code: 2, status: 'Token过期', expired: tokenExpired, refreshEdpired: refreshTokenExpired }
+                        else data = { code: 0, status: 'Token正常', expired: tokenExpired, refreshEdpired: refreshTokenExpired }
                     }
                     break;
             }
