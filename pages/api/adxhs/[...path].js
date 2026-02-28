@@ -67,7 +67,7 @@ export default async function handler(req, res) {
                     if (!token) { data = { code: 1, status: 'fail', msg: '无效token', data: {}, reAuth: false }; }
                     else {
                         const payload = await verifyAccessToken(token);
-                        if (!payload) data = { code: 2, status: 'fail', msg: 'token过期', data: {} , reAuth: false};
+                        if (!payload) data = { code: 2, status: 'fail', msg: 'token过期', data: {}, reAuth: false };
                         else {
                             let auth = await adXHS.getAccessTokenFromDB();
                             const refreshExpired = adXHS.isRefreshTokenExpired(auth.data);
@@ -85,13 +85,17 @@ export default async function handler(req, res) {
                                         const tokenExpired = addDate(new Date(auth.data.update_time), auth.data.access_token_expires_in, 'second');
                                         const refreshTokenExpired = addDate(new Date(auth.data.update_time), auth.data.refresh_token_expires_in, 'second');
                                         const reAuth = adXHS.isRefreshTokenExpired(auth.data) === true;
-                                        data = { code: 0, status: 'Token正常', expireDate: tokenExpired, expired: adXHS.isAccessTokenExpired(auth.data), refreshExpireDate: refreshTokenExpired, refreshExpired: adXHS.isRefreshTokenExpired(auth.data), reAuth: reAuth }
+                                        data = { code: 0, status: 'success', msg: 'ok', expireDate: tokenExpired, expired: adXHS.isAccessTokenExpired(auth.data), refreshExpireDate: refreshTokenExpired, refreshExpired: adXHS.isRefreshTokenExpired(auth.data), reAuth: reAuth }
                                     }
                                 }
                             }
                         }
                     }
-
+                case 'reauth':
+                    const scope = encodeURIComponent(`["report_service","ad_query","ad_manage","account_manage"]`)
+                    const redirectUri = encodeURIComponent(process.env.ADXHS_AUTH_REDIRECT_URL)
+                    const authUrl = `https://ad-market.xiaohongshu.com/auth?appId=${process.env.ADXHS_APPID}&scope=${scope}&redirectUri=${redirectUri}&state=ADXHS`
+                    data = {code: 0, status: 'success', msg: 'ok', url: authUrl}
             }
         }
         res.json(data);

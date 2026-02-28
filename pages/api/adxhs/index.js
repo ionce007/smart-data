@@ -22,11 +22,13 @@ export default async function handler(req, res) {
                     const token = await adxhs.getAccessTokenFromAdxhs(authCode);
                     if(token.code === 0 ) {
                         const data = await adxhs.saveAccessToken(token.data, 'adxhs');
-                        if(data && data.code === 0 ) res.redirect('/auth/auth-status'); //res.json({code: data.code, success: false, msg: data.msg});
+                        if(data && data.code === 0 ) {
+                            if(state === 'ADXHS') res.redirect('/auth/auth-status');
+                            else res.json({code: data.code, success: data.success, msg: data.msg});
+                        }
                         else res.json({code: -1, success: false, msg: 'Token存档失败！'});
                     }
                     //res.json({code: 0, success: true, msg: 'ok'});
-                    res.redirect('/auth/auth-status');
                 }
                 break;
             case 'POST':
@@ -40,5 +42,4 @@ export default async function handler(req, res) {
             msg: error.message
         });
     }
-
 }

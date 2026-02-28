@@ -35,6 +35,27 @@ export default function XHSAuthStatus() {
     };
   }, []);
 
+  const handleReAuthClick = async () => {
+    try {
+      Loading.show('正在更新Token...');
+      const res = await fetch('/api/adxhs/reauth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include'
+      });
+      if (!res.ok) throw new Error('Failed to fetch');
+
+      const data = await res.json();
+      if(data && data.code === 0) location.href = data.url;
+      //setDetails(data);
+    } catch (error) {
+      console.log(error);
+      //setDetails(null);
+    }
+    finally {
+      Loading.hide();
+    }
+  }
   const handleRefreshTokenClick = async () => {
     try {
       Loading.show('正在更新Token...');
@@ -148,7 +169,8 @@ export default function XHSAuthStatus() {
 
             <div className="flex mt-6 items-center justify-between">
               <div className="flex space-x-2">
-                <button className="px-4 py-2 bg-red-400 text-white rounded-md">
+                <button onClick={() => handleReAuthClick()}
+                  className="px-4 py-2 bg-red-400 text-white rounded-md">
                   {details?.code === 1 || details?.code < 0 ? '授权' : '重新授权'}
                 </button>
                 <button onClick={() => handleRefreshTokenClick()}
