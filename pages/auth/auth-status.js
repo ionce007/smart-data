@@ -1,5 +1,8 @@
 import Layout from '../../components/Layout'
 import { useState, useEffect } from 'react';
+import { formatDate } from '../../lib';
+import Loading from '../../lib/loading';
+
 
 export default function XHSAuthStatus() {
   const [details, setDetails] = useState(null);
@@ -27,33 +30,111 @@ export default function XHSAuthStatus() {
     // 立即检查一次
     checkStatus();
 
-    // 每30秒检查一次
-    //intervalId = setInterval(checkStatus, 180 * 1000);
-
     return () => {
       mounted = false;
-      //clearInterval(intervalId);
     };
   }, []);
 
+  const handleRefreshTokenClick = async () => {
+    try {
+      Loading.show('正在更新Token...');
+      const res = await fetch('/api/adxhs/refresh-token', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include'
+      });
+      if (!res.ok) throw new Error('Failed to fetch');
+
+      const data = await res.json();
+      setDetails(data);
+    } catch (error) {
+      setDetails(null);
+    }
+    finally {
+      Loading.hide();
+    }
+  }
+
   const render = (code) => {
-    if (code === 1) {
+    if (code !== 0) {
       return (
-        <div>
-          <div>
-            <span className="block text-sm font-medium text-gray-700 mb-2">
+        <div className="flex mt-2 mb-2 items-center justify-between">
+          <div className="flex space-x-2">
+            <div className="px-4 py-2 bg-blue-600 text-white rounded-md">
               授权状态
-            </span>
-            <div className="bg-white rounded-lg px-4 py-4">{details?.status}</div>
-          </div>
-          <div>
-            <button type="button" className="px-4 py-1 bg-red-600 text-white rounded-md hover:bg-red-700">授权</button>
+            </div>
+            <div className="px-4 py-2 bg-blue-600 text-white rounded-md">
+              {details?.status}
+            </div>
           </div>
         </div>
       )
     }
-    else{
-      return (<div></div>)
+    else {
+      return (
+        <div>
+          <div className="flex mt-2 mb-2 items-center justify-between">
+            <div className="flex space-x-2">
+              <div className="px-4 bg-gray-200 w-[200px] flex-shrink-0 py-2 rounded-md">
+                授权状态
+              </div>
+              <div className="px-4 w-[180px] flex-shrink-0 py-2 rounded-md">
+                已授权
+              </div>
+            </div>
+          </div>
+          <div className="flex mt-2 mb-2 items-center justify-between">
+            <div className="flex space-x-2">
+              <div className="px-4 bg-gray-200 w-[200px] flex-shrink-0 py-2 rounded-md">
+                Token是否过期
+              </div>
+              <div className="px-4 w-[180px] flex-shrink-0 py-2 rounded-md">
+                {details?.expired ? '已过期' : '否'}
+              </div>
+            </div>
+          </div>
+          <div className="flex mt-2 mb-2 items-center justify-between">
+            <div className="flex space-x-2">
+              <div className="px-4 bg-gray-200 w-[200px] flex-shrink-0 py-2 rounded-md">
+                Token过期时间
+              </div>
+              <div className="px-4 w-[180px] flex-shrink-0 py-2 rounded-md">
+                {formatDate(details?.expireDate, 'yyyy-MM-dd HH:mm:ss')}
+              </div>
+            </div>
+          </div>
+          <div className="flex mt-2 mb-2 items-center justify-between">
+            <div className="flex space-x-2">
+              <div className="px-4 bg-gray-200 w-[200px] flex-shrink-0 py-2 rounded-md">
+                refrshToken是否过期
+              </div>
+              <div className="px-4 w-[180px] flex-shrink-0 py-2 rounded-md">
+                {details?.refreshExpire ? '已过期' : '正常'}
+              </div>
+            </div>
+          </div>
+          <div className="flex mt-2 mb-2 items-center justify-between">
+            <div className="flex space-x-2">
+              <div className="px-4 bg-gray-200 w-[200px] flex-shrink-0 py-2 rounded-md">
+                refreshToken过期时间
+              </div>
+              <div className="px-4 w-[180px] flex-shrink-0 py-2 rounded-md">
+                {formatDate(details?.refreshExpireDate, 'yyyy-MM-dd HH:mm:ss')}
+              </div>
+            </div>
+          </div>
+          <div className="flex mt-2 mb-2 items-center justify-between">
+            <div className="flex space-x-2">
+              <div className="px-4 bg-gray-200 w-[200px] flex-shrink-0 py-2 rounded-md">
+                是否需要重新授权
+              </div>
+              <div className="px-4 w-[180px] flex-shrink-0 py-2 rounded-md">
+                {details?.reAuth ? '是' : '否'}
+              </div>
+            </div>
+          </div>
+        </div>
+      )
     }
   }
 
@@ -64,71 +145,18 @@ export default function XHSAuthStatus() {
         <div className="bg-white rounded-lg shadow">
           <div className="p-6">
             {render(details?.code)}
-            <form className="space-y-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  系统名称
-                </label>
-                <input
-                  type="text"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  defaultValue="Admin System"
-                />
-              </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  管理员邮箱
-                </label>
-                <input
-                  type="email"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  defaultValue="admin@example.com"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  每页显示条数
-                </label>
-                <select className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                  <option>10</option>
-                  <option>20</option>
-                  <option>50</option>
-                  <option>100</option>
-                </select>
-              </div>
-
-              <div className="flex items-center">
-                <input
-                  type="checkbox"
-                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                  defaultChecked
-                />
-                <label className="ml-2 block text-sm text-gray-900">
-                  开启邮件通知
-                </label>
-              </div>
-
-              <div className="flex items-center">
-                <input
-                  type="checkbox"
-                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                />
-                <label className="ml-2 block text-sm text-gray-900">
-                  开启自动备份
-                </label>
-              </div>
-
-              <div className="pt-4">
-                <button
-                  type="submit"
-                  className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-                >
-                  保存设置
+            <div className="flex mt-6 items-center justify-between">
+              <div className="flex space-x-2">
+                <button className="px-4 py-2 bg-red-400 text-white rounded-md">
+                  {details?.code === 1 || details?.code < 0 ? '授权' : '重新授权'}
+                </button>
+                <button onClick={() => handleRefreshTokenClick()}
+                  disabled={details?.code !== 0} className={`px-4 py-2 border border-gray-300 rounded-md ${details?.code !== 0 ? 'disabled:bg-gray-400 disabled:cursor-not-allowed disabled:hover:bg-gray-400 disabled:opacity-75' : 'hover:bg-gray-50'}`}>
+                  更新Token
                 </button>
               </div>
-            </form>
+            </div>
           </div>
         </div>
       </div>

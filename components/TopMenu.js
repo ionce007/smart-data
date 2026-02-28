@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import MCPStatusIndicator from '../components/MCPStatusIndicator';
 
 export default function TopMenu({ onToggleSidebar, sidebarCollapsed }) {
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false)
@@ -35,6 +36,9 @@ export default function TopMenu({ onToggleSidebar, sidebarCollapsed }) {
 
           {/* 右侧菜单（保持不变） */}
           <div className="flex items-center space-x-4">
+            <div className='relative'>
+                <MCPStatusIndicator />
+            </div>
             {/* 通知图标 */}
             <button className="p-2 text-gray-400 hover:text-gray-500 rounded-full hover:bg-gray-100">
               <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

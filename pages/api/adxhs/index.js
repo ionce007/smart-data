@@ -18,7 +18,6 @@ export default async function handler(req, res) {
                     if(!authCode){
                         console.log('authCode值为空');
                         res.json({success: false, code: -1, msg: '获取的authCode值为空。'});
-                        return;
                     }
                     const token = await adxhs.getAccessTokenFromAdxhs(authCode);
                     if(token.code === 0 ) {
@@ -27,7 +26,6 @@ export default async function handler(req, res) {
                         else res.json({code: -1, success: false, msg: 'Token存档失败！'});
                     }
                     res.json({code: 0, success: true, msg: 'ok'});
-                    return token;
                 }
                 break;
             case 'POST':

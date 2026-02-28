@@ -13,12 +13,9 @@ export default function Document() {
   return (
     <Html lang="zh-CN">
       <Head>
-        <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+        <script src="https://cdn.tailwindcss.com"></script>
       </Head>
       <body>
-        {/*<div style={{ position: 'fixed', top: 20, right: 300, 'zIndex': 11, background: '#f0f0f0', padding: 5, borderRadius: 5, fontSize: 12 }}>
-          MCP: {mcpStatus}
-        </div>*/}
         <Main />
         <NextScript />
       </body>

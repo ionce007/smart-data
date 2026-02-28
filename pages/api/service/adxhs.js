@@ -1,5 +1,5 @@
 const db = require('../../../models');
-const util = require('../../../lib/utils');
+const util = require('../../../lib');
 
 async function getAccessTokenFromAdxhs(authCode) {
     try {
@@ -62,7 +62,7 @@ async function saveAccessToken(token, platform = 'adxhs') {
             let dbToken = await db.Auth.findOne({ where: { platform: platform }, raw: true });
             newToken.token = JSON.stringify(token);
             newToken.platform = platform;
-            db.Auth.updata(newToken)
+            await db.Auth.update(newToken)
         }
         else {
             newToken = await db.Auth.create({ platform: platform, token: JSON.stringify(token) });
