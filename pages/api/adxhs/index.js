@@ -1,5 +1,5 @@
 const db = require('../../../models');
-const util = require('../../../lib/utils');
+const util = require('../../../lib');
 const adxhs = require('../service/adxhs');
 const bcrypt = require('bcryptjs');
 
