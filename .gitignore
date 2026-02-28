@@ -2,6 +2,7 @@
 .env.local
 .next
 test.json
+test1.json
 /.next
 /.next/*.*
 /node_modules

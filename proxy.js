@@ -19,7 +19,7 @@ const publicRoutes = [
 // 管理员路由
 const adminRoutes = ['/admin', '/api/admin'];
 
-export async function middleware(request) {
+export async function proxy(request) {
     const { pathname } = request.nextUrl;
     console.log('middleware -> pathname = ', pathname);
     const response = NextResponse.next();
