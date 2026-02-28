@@ -26,6 +26,7 @@ export default async function handler(req, res) {
                         else res.json({code: -1, success: false, msg: 'Token存档失败！'});
                     }
                     res.json({code: 0, success: true, msg: 'ok'});
+                    res.redirect('/auth/auth-status');
                 }
                 break;
             case 'POST':
