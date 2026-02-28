@@ -13,6 +13,7 @@ export default function Document() {
   return (
     <Html lang="zh-CN">
       <Head>
+        <link rel="icon" href="/favicon.ico" />
         <script src="https://cdn.tailwindcss.com"></script>
       </Head>
       <body>
