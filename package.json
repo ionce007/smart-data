@@ -4,10 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "NODE_OPTIONS='--inspect' next dev --webpack",
+    "dev": "next dev --webpack",
+    "dev2": "NODE_OPTIONS='--inspect' next dev --webpack",
     "dev1": "next dev --webpack",
     "build": "next build --webpack",
-    "start": "NODE_OPTIONS='--inspect' next start",
+    "start": "next start",
+    "start2": "NODE_OPTIONS='--inspect' next start",
     "lint": "next lint"
   },
   "keywords": [],

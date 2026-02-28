@@ -1,12 +1,21 @@
 .env
 .env.local
 .next
+test.json
 /.next
 /.next/*.*
 /node_modules
+/edge-functions
+/node-functions
 /app/node_modules
 /.idea
 /.vscode
 logs
 /logs/*.*
 
+
+# Tencent Cloud EdgeOne
+.env
+.edgeone/*
+.tef_dist/*
+  
