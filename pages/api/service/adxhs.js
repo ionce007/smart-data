@@ -19,7 +19,7 @@ async function getAccessTokenFromAdxhs(authCode) {
         return { code: -1, success: false, msg: error.message, data: null };
     }
 }
-async function refreshToken(refresh_token, platform = 'adxhs'){
+async function refreshToken(refresh_token, platform = 'adxhs') {
     try {
         const url = `https://adapi.xiaohongshu.com/api/open/oauth2/refresh_token`;
         const jsonData = { app_id: Number(process.env.ADXHS_APPID), secret: process.env.ADXHS_SECRET, refresh_token: refresh_token }
@@ -62,50 +62,65 @@ async function saveAccessToken(token, platform = 'adxhs') {
             let dbToken = await db.Auth.findOne({ where: { platform: platform }, raw: true });
             newToken.token = JSON.stringify(token);
             newToken.platform = platform;
-            await db.Auth.update(newToken, {where: { platform: platform } })
+            await db.Auth.update(newToken, { where: { platform: platform } })
         }
         else {
             newToken = await db.Auth.create({ platform: platform, token: JSON.stringify(token) });
         }
-        return {code: 0, success: true, msg: '成功', data: newToken };
+        return { code: 0, success: true, msg: '成功', data: newToken };
     }
     catch (error) {
         console.log(error);
         return { code: -1, success: false, msg: error.message, data: null };
     }
 }
-function isAccessTokenExpired(token, platform = 'adxhs'){
-    try{
+function isAccessTokenExpired(token, platform = 'adxhs') {
+    try {
         const expiredDate = util.addDate(new Date(token.update_time), token.access_token_expires_in, 'second');
         return expiredDate <= new Date();
     }
-    catch(error){
+    catch (error) {
         console.log(error);
         return true;
     }
 }
-function isRefreshTokenExpired(token, platform = 'adxhs'){
-    try{
+function isRefreshTokenExpired(token, platform = 'adxhs') {
+    try {
         const expiredDate = util.addDate(new Date(token.update_time), token.refresh_token_expires_in, 'second');
         return expiredDate <= new Date();
     }
-    catch(error){
+    catch (error) {
         console.log(error);
         return true;
     }
 }
-async function refreshAccessToken(oldToken, platform = 'adxhs'){
-    if(!isAccessTokenExpired(oldToken, platform) && !isRefreshTokenExpired(oldToken, platform)) return oldToken;
+async function refreshAccessToken(oldToken, platform = 'adxhs') {
+    if (!isAccessTokenExpired(oldToken, platform) && !isRefreshTokenExpired(oldToken, platform)) return oldToken;
     let newToken;
-    if(isRefreshTokenExpired(oldToken, platform)) newToken = authorize(platform);
-    else if(isAccessTokenExpired(oldToken, platform))  newToken = await refreshToken(oldToken.token.refresh_token, platform);
+    if (isRefreshTokenExpired(oldToken, platform)) newToken = authorize(platform);
+    else if (isAccessTokenExpired(oldToken, platform)) newToken = await refreshToken(oldToken.token.refresh_token, platform);
     return newToken;
 }
-function authorize(platform = 'adxhs'){
+function authorize(platform = 'adxhs') {
     const scope = encodeURIComponent(`["report_service","ad_query","ad_manage","account_manage"]`);
     const redirectUri = encodeURIComponent(process.env.ADXHS_AUTH_REDIRECT_URL);
     const url = `https://ad-market.xiaohongshu.com/auth?appId=${process.env.ADXHS_APPID}&scope=${scope}&redirectUri=${redirectUri}&state=ADXHS`
-    return {code: 0, status: true, msg: '小红书授权', url: url};
+    return { code: 0, status: true, msg: '小红书授权', url: url };
+}
+async function parseAdXHS() {
+    try {
+        const token = await getAccessTokenFromDB(platform);
+        if (token.code !== 0) return { code: token.code, success: token.success, msg: token.msg };
+        const json = { code: 0, success: true, msg: 'ok', app_id: token.data.app_id, 
+            user_id: token.data.user_id, virtual_seller_id: token.data.virtual_seller_id,
+            access_token: token.data.access_token, advertiser_id: token.data.approval_advertisers[0].advertiser_id
+        }
+        return json;
+    }
+    catch (error) {
+        console.log(error);
+        return { code: -1, success: false, msg: error.message };
+    }
 }
 module.exports = {
     getAccessTokenFromAdxhs,
