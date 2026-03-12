@@ -15,10 +15,10 @@ class ModuleRegistry {
     if (this.initialized) return;
 
     // 注册各个模块
-    this.register('user', new UserModule());
+    //this.register('user', new UserModule());
     this.register('xhs', new XHSModule());
-    this.register('database', new DatabaseModule());
-    this.register('common', new CommonModule());
+    //this.register('database', new DatabaseModule());
+    //this.register('common', new CommonModule());
 
     this.initialized = true;
     console.log('✅ MCP 模块注册完成:', Array.from(this.modules.keys()));
