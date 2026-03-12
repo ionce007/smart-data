@@ -1,9 +1,7 @@
 const db = require('../../../models');
 const util = require('../../../lib');
-const adxhs = require('../service/adxhs');
+const adxhs = require('../../../lib/services/adxhs'); //require('../service/adxhs');
 const bcrypt = require('bcryptjs');
-
-//const url = require('url');
 
 export default async function handler(req, res) {
     const { method } = req;

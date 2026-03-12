@@ -2,7 +2,7 @@
 import { NextResponse } from 'next/server';
 import { verifyAccessToken } from './lib/jwt';
 import { generateAccessToken, generateRefreshToken } from './lib/jwt';
-import { findUserById, isValidRefreshToken, saveRefreshToken } from './lib/token' 
+import { findUserById, isValidRefreshToken, saveRefreshToken } from './lib/token'
 
 // 公开路由（不需要认证）
 const publicRoutes = [
@@ -29,7 +29,7 @@ export async function proxy(request) {
         const accessToken = await generateAccessToken(user);
         const refreshToken = await generateRefreshToken(user.id);
         saveRefreshToken(user.id, refreshToken);
-        
+
         response.cookies.set({
             name: 'token',
             value: accessToken,
@@ -54,7 +54,6 @@ export async function proxy(request) {
     }
     // 1. 允许公开路由
     if (publicRoutes.some(route => pathname.startsWith(route))) {
-        //return NextResponse.next();
         return response;
     }
 
@@ -76,17 +75,10 @@ export async function proxy(request) {
     if (!token) {
         // API路由返回401
         if (pathname.startsWith('/api/')) {
-            return NextResponse.json(
-                { message: '未提供访问令牌' },
-                { status: 401 }
-            );
+            return NextResponse.json({ message: '未提供访问令牌', status: 401 });
         }
 
         // 页面路由重定向到登录
-        /*const url = new URL('/login', request.url);
-        url.searchParams.set('from', pathname);
-        return NextResponse.redirect(url);*/
-
         const url = new URL('/', request.url);
         return NextResponse.redirect(url);
     }
@@ -96,17 +88,10 @@ export async function proxy(request) {
     if (!payload) {
         // API路由返回401
         if (pathname.startsWith('/api/')) {
-            return NextResponse.json(
-                { message: '无效或过期的令牌' },
-                { status: 401 }
-            );
+            return NextResponse.json({ message: '无效或过期的令牌', status: 401 });
         }
 
         // 页面路由重定向到登录
-        /*const url = new URL('/login', request.url);
-        url.searchParams.set('from', pathname);
-        return NextResponse.redirect(url);*/
-
         const url = new URL('/', request.url);
         return NextResponse.redirect(url);
     }
@@ -115,10 +100,7 @@ export async function proxy(request) {
     if (adminRoutes.some(route => pathname.startsWith(route))) {
         if (payload.role !== 'admin') {
             if (pathname.startsWith('/api/')) {
-                return NextResponse.json(
-                    { message: '需要管理员权限' },
-                    { status: 403 }
-                );
+                return NextResponse.json({ message: '需要管理员权限', status: 403 });
             }
             return NextResponse.redirect(new URL('/unauthorized', request.url));
         }
@@ -131,11 +113,7 @@ export async function proxy(request) {
     requestHeaders.set('x-user-username', payload.username);
 
     // 7. 继续处理请求
-    return NextResponse.next({
-        request: {
-            headers: requestHeaders,
-        },
-    });
+    return NextResponse.next({ request: { headers: requestHeaders } });
 }
 
 // 配置中间件匹配的路由

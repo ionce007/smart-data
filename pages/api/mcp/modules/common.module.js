@@ -18,34 +18,21 @@ export class CommonModule extends BaseModule {
 
   // Ping
   async ping(params, context) {
-    return {
-      pong: true,
-      timestamp: new Date().toISOString()
-    };
+    return { pong: true, timestamp: new Date().toISOString() };
   }
 
   // 健康检查
   async health(params, context) {
-    return {
-      status: 'healthy',
-      timestamp: new Date().toISOString()
-    };
+    return { status: 'healthy', timestamp: new Date().toISOString() };
   }
 
   // 回显
   async echo(params, context) {
-    return {
-      received: params,
-      timestamp: new Date().toISOString()
-    };
+    return { received: params, timestamp: new Date().toISOString() };
   }
 
   // 获取服务器时间
   async time(params, context) {
-    return {
-      iso: new Date().toISOString(),
-      timestamp: Date.now(),
-      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
-    };
+    return { iso: new Date().toISOString(), timestamp: Date.now(), timezone: Intl.DateTimeFormat().resolvedOptions().timeZone };
   }
 }

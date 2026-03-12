@@ -78,11 +78,7 @@ export default async function handler(req, res) {
       const { method, params, id } = body;
 
       if (!method) {
-        return res.status(400).json({
-          jsonrpc: '2.0',
-          error: { code: -32600, message: 'Invalid Request' },
-          id: id || null
-        });
+        return res.status(400).json({ jsonrpc: '2.0', error: { code: -32600, message: 'Invalid Request' }, id: id || null });
       }
 
       // 解析方法名（格式：module.method）
@@ -94,11 +90,7 @@ export default async function handler(req, res) {
 
         // 如果有 ID，返回响应
         if (id !== null && id !== undefined) {
-          res.json({
-            jsonrpc: '2.0',
-            result,
-            id
-          });
+          res.json({ jsonrpc: '2.0', result, id });
         } else {
           // 通知，无需响应
           res.status(202).end();
@@ -107,14 +99,7 @@ export default async function handler(req, res) {
         console.error(`[${context.requestId}] 执行方法失败:`, error);
 
         if (id !== null && id !== undefined) {
-          res.status(400).json({
-            jsonrpc: '2.0',
-            error: {
-              code: error.code || -32603,
-              message: error.message || 'Internal error'
-            },
-            id
-          });
+          res.status(400).json({ jsonrpc: '2.0', error: { code: error.code || -32603, message: error.message || 'Internal error' }, id });
         } else {
           res.status(202).end();
         }
@@ -128,11 +113,7 @@ export default async function handler(req, res) {
       const { method, params, id } = req.body;
 
       if (!method) {
-        return res.status(400).json({
-          jsonrpc: '2.0',
-          error: { code: -32600, message: 'Invalid Request' },
-          id: id || null
-        });
+        return res.status(400).json({ jsonrpc: '2.0', error: { code: -32600, message: 'Invalid Request' }, id: id || null });
       }
 
       const [moduleName, methodName] = method.split('.');
@@ -140,20 +121,9 @@ export default async function handler(req, res) {
       try {
         const result = await moduleRegistry.call(moduleName, methodName, params || {}, context);
 
-        res.json({
-          jsonrpc: '2.0',
-          result,
-          id: id || null
-        });
+        res.json({ jsonrpc: '2.0', result, id: id || null });
       } catch (error) {
-        res.status(400).json({
-          jsonrpc: '2.0',
-          error: {
-            code: error.code || -32603,
-            message: error.message || 'Internal error'
-          },
-          id: id || null
-        });
+        res.status(400).json({ jsonrpc: '2.0', error: { code: error.code || -32603, message: error.message || 'Internal error' }, id: id || null });
       }
 
       return;
@@ -180,7 +150,7 @@ export default async function handler(req, res) {
     }
 
     // 获取模块列表
-    if (fullPath === 'modules' && req.method === 'GET') {
+    if (fullPath === 'module' && req.method === 'GET') {
       return res.json({
         modules: moduleRegistry.getAllModules(),
         tools: moduleRegistry.getToolsList()
@@ -208,21 +178,12 @@ export default async function handler(req, res) {
     }
 
     // 404 - 未知路径
-    return res.status(404).json({
-      error: 'Not found',
-      path: fullPath
-    });
+    return res.status(404).json({ error: 'Not found', path: fullPath });
 
   } catch (error) {
     console.error(`[${context.requestId}] MCP API Error:`, error);
 
-    res.status(500).json({
-      jsonrpc: '2.0',
-      error: {
-        code: -32603,
-        message: error.message || 'Internal server error'
-      }
-    });
+    res.status(500).json({ jsonrpc: '2.0', error: { code: -32603, message: error.message || 'Internal server error' } });
   }
 
 

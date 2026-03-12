@@ -46,11 +46,9 @@ export default function XHSAuthStatus() {
       if (!res.ok) throw new Error('Failed to fetch');
 
       const data = await res.json();
-      if(data && data.code === 0) location.href = data.url;
-      //setDetails(data);
+      if (data && data.code === 0) location.href = data.url;
     } catch (error) {
       console.log(error);
-      //setDetails(null);
     }
     finally {
       Loading.hide();
@@ -67,7 +65,8 @@ export default function XHSAuthStatus() {
       if (!res.ok) throw new Error('Failed to fetch');
 
       const data = await res.json();
-      setDetails(data);
+      if(data.code === 3) await handleReAuthClick();
+      else setDetails(data);
     } catch (error) {
       setDetails(null);
     }

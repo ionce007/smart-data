@@ -16,7 +16,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@sequelize/mssql": "^7.0.0-alpha.48",
+    "@sequelize/mssql": "7.0.0-alpha.48",
     "bcryptjs": "^3.0.3",
     "body-parser": "^2.2.2",
     "cookie": "^1.1.1",

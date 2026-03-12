@@ -1,11 +1,10 @@
-//import { NextResponse } from 'next/server';
-//import { Auth } from '../../../models';
-import adXHS from '../service/adxhs';
-import { addDate } from '../../../lib';
-import { generateAccessToken, generateRefreshToken, verifyAccessToken } from '../../../lib/jwt';
-import { findUserById, isValidRefreshToken, saveRefreshToken } from '../../../lib/token'  //'../../lib/token';
-import { serialize } from 'cookie';
-import { NextResponse } from 'next/server';
+import adXHS from '@/lib/services/adxhs';  
+import { addDate } from '@/lib';
+import { generateAccessToken, generateRefreshToken, verifyAccessToken } from '@/lib/jwt';
+import { findUserById, isValidRefreshToken, saveRefreshToken } from '@/lib/token'
+import xhsData from '@/lib/services/xhsdata';
+
+const METHOD = ['GET', 'POST'];
 
 export default async function handler(req, res) {
     const { path } = req.query;
@@ -31,72 +30,77 @@ export default async function handler(req, res) {
     const accessToken = await generateAccessToken(user);
     const refreshToken = await generateRefreshToken(user.id);
     saveRefreshToken(user.id, refreshToken);
-    //res.setHeader('Cookie', `token=${refreshToken}; secure=true;sameSite=none;HttpOnly; Path=/; Max-Age=604800`);
-    //const response = NextResponse.json({ token: accessToken });
-    // 更新cookie中的刷新令牌
-    /*response.cookies.set({
-        name: 'token',
-        value: accessToken,
-        httpOnly: true,
-        secure: true,
-        sameSite: 'lax',
-        path: '/',
-        maxAge: 7 * 24 * 60 * 60
-    });*/
+
+    const getParams = (req) => {
+        const params = { ...req.query, ...req.body };
+        Object.keys(params).forEach(key => {
+            if (params[key] === undefined) delete params[key];
+        });
+        return params;
+    };
+
     try {
         let data = {};
-        if (req.method === 'GET') {
-            switch (fullPath) {
-                case 'auth-status':
-                    const auth = await adXHS.getAccessTokenFromDB();
-                    if (auth.code === -2) data = { code: 1, status: '未授权', reAuth: true, token: 'refreshToken' }
-                    else if (auth.code === -1) data = { code: -1, status: '系统错误', reAuth: true, token: 'refreshToken' }
-                    else {
-                        const tokenExpired = addDate(new Date(auth.data.update_time), auth.data.access_token_expires_in, 'second');
-                        const refreshTokenExpired = addDate(new Date(auth.data.update_time), auth.data.refresh_token_expires_in, 'second');
-                        const reAuth = adXHS.isRefreshTokenExpired(auth.data) === true;
-                        data = { code: 0, status: 'Token正常', expireDate: tokenExpired, expired: adXHS.isAccessTokenExpired(auth.data), refreshExpireDate: refreshTokenExpired, refreshExpired: adXHS.isRefreshTokenExpired(auth.data), reAuth: reAuth, token: 'refreshToken' }
-                    }
-                    break;
-            }
-        }
-        else if (req.method === 'POST') {
-            switch (fullPath) {
-                case 'refresh-token':
-                    const token = req.cookies ? req.cookies['token'] : null;
-                    if (!token) { data = { code: 1, status: 'fail', msg: '无效token', data: {}, reAuth: false }; }
-                    else {
-                        const payload = await verifyAccessToken(token);
-                        if (!payload) data = { code: 2, status: 'fail', msg: 'token过期', data: {}, reAuth: false };
-                        else {
-                            let auth = await adXHS.getAccessTokenFromDB();
-                            const refreshExpired = adXHS.isRefreshTokenExpired(auth.data);
-                            const scope = encodeURIComponent(`["report_service","ad_query","ad_manage","account_manage"]`)
-                            const redirectUri = encodeURIComponent(process.env.ADXHS_AUTH_REDIRECT_URL)
-                            const authUrl = `https://ad-market.xiaohongshu.com/auth?appId=${process.env.ADXHS_APPID}&scope=${scope}&redirectUri=${redirectUri}&state=ADXHS`
-                            if (refreshExpired) data = { code: 3, status: 'fail', msg: 'refresh_token过期，需重新授权', data: {}, reAuth: true, authUrl: authUrl };
-                            else {
-                                auth = await adXHS.refreshToken(auth.data.refresh_token)
-                                if (!auth || !auth.data) data = { code: 4, status: 'fail', msg: '更新access_token失败', data: {}, reAuth: false };
-                                else {
-                                    const newToken = await adXHS.saveAccessToken(auth.data);
-                                    if (!newToken || newToken.code !== 0) data = { code: 5, status: 'fail', msg: '保存新的token失败', data: {}, reAuth: false };
-                                    else {
-                                        const tokenExpired = addDate(new Date(auth.data.update_time), auth.data.access_token_expires_in, 'second');
-                                        const refreshTokenExpired = addDate(new Date(auth.data.update_time), auth.data.refresh_token_expires_in, 'second');
-                                        const reAuth = adXHS.isRefreshTokenExpired(auth.data) === true;
-                                        data = { code: 0, status: 'success', msg: 'ok', expireDate: tokenExpired, expired: adXHS.isAccessTokenExpired(auth.data), refreshExpireDate: refreshTokenExpired, refreshExpired: adXHS.isRefreshTokenExpired(auth.data), reAuth: reAuth }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                case 'reauth':
-                    const scope = encodeURIComponent(`["report_service","ad_query","ad_manage","account_manage"]`)
-                    const redirectUri = encodeURIComponent(process.env.ADXHS_AUTH_REDIRECT_URL)
-                    const authUrl = `https://ad-market.xiaohongshu.com/auth?appId=${process.env.ADXHS_APPID}&scope=${scope}&redirectUri=${redirectUri}&state=ADXHS`
-                    data = {code: 0, status: 'success', msg: 'ok', url: authUrl}
-            }
+        const params = getParams(req);
+        switch (fullPath) {
+            case 'auth-status':
+                data = await xhsData.checkAuthStatus();
+                break;
+            case 'refresh-token':
+                if (req.method !== 'POST') return { code: -2, success: false, msg: `不支持“${req.method}”的访问`, data: null };
+                const token = req.cookies ? req.cookies['token'] : null;
+                data = await xhsData.refreshToken(token);
+                break;
+            case 'reauth':
+                const scope = encodeURIComponent(`["report_service","ad_query","ad_manage","account_manage"]`)
+                const redirectUri = encodeURIComponent(process.env.ADXHS_AUTH_REDIRECT_URL)
+                const authUrl = `https://ad-market.xiaohongshu.com/auth?appId=${process.env.ADXHS_APPID}&scope=${scope}&redirectUri=${redirectUri}&state=ADXHS`
+                data = { code: 0, status: 'success', msg: 'ok', url: authUrl }
+                break;
+            case 'taxonomy': //行业类目
+                if (METHOD.indexOf(req.method) < 0) return { code: -2, success: false, msg: `不支持“${req.method}”的访问`, data: null };
+                data = await xhsData.taxonomy();
+                break;
+            case 'taxonomy-attr': //行业类目属性
+                if (METHOD.indexOf(req.method) < 0) return { code: -2, success: false, msg: `不支持“${req.method}”的访问`, data: null };
+                data = await xhsData.taxonomyAttr(params);
+                break;
+            case 'keyword-match': //获取关键词匹配词库信息
+                if (METHOD.indexOf(req.method) < 0) { return { code: -2, success: false, msg: `不支持“${req.method}”的访问`, data: null }; }
+                data = await xhsData.keywordMatch(params);
+                break;
+            case 'target-info'://获取定向信息
+                if (METHOD.indexOf(req.method) < 0) { return { code: -2, success: false, msg: `不支持“${req.method}”的访问`, data: null }; }
+                data = await xhsData.targetInfo(params);
+                break;
+            case 'product':  //获取行业商品列表
+                if (METHOD.indexOf(req.method) < 0) { return { code: -2, success: false, msg: `不支持“${req.method}”的访问`, data: null }; }
+                data = await xhsData.product(params);
+                break;
+            case 'notelist': //获取笔记列表
+                if (req.method !== 'POST') { return { code: -2, success: false, msg: `不支持“${req.method}”的访问`, data: null }; }
+                data = await xhsData.notelist(params);
+                break;
+            case 'recommend': //定向推词-以词推词
+                if (req.method !== 'POST') return { code: -2, success: false, msg: `不支持“${req.method}”的访问`, data: null };
+                data = await xhsData.recommend(params);
+                break;
+            case 'keyword-info'://获取推荐关键词信息
+                if (req.method !== 'POST') return { code: -2, success: false, msg: `不支持“${req.method}”的访问`, data: null };
+                data = await xhsData.keywordInfo(params);
+                break;
+            case 'baglist': //词包推荐
+                if (req.method !== 'POST') return { code: -2, success: false, msg: `不支持“${req.method}”的访问`, data: null };
+                data = await xhsData.baglist(params);
+                break;
+            case 'crowd-estimate': //人群预估
+                if (req.method !== 'POST') return { code: -2, success: false, msg: `不支持“${req.method}”的访问`, data: null };
+                data = await xhsData.crowdEstimate(params);
+                break;
+            case 'check-dup': //计划单元名称重复性校验
+                if (req.method !== 'POST') return { code: -2, success: false, msg: `不支持“${req.method}”的访问`, data: null };
+                data = await xhsData.checkDup(params);
+                break;
         }
         res.json(data);
     }
@@ -104,6 +108,4 @@ export default async function handler(req, res) {
         console.error(`[${context.requestId}] 请求错误:`, error);
         res.status(500).json({ success: 'false', code: -1, msg: error.message || 'Internal server error' });
     }
-
-    //return res;
 }

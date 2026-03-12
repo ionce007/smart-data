@@ -1,6 +1,6 @@
 // pages/api/mcp/modules/index.js
 import { UserModule } from './user.module';
-//import { PostModule } from './post.module';
+import { XHSModule } from './xhs.module';
 import { DatabaseModule } from './database.module';
 import { CommonModule } from './common.module';
 
@@ -16,7 +16,7 @@ class ModuleRegistry {
 
     // 注册各个模块
     this.register('user', new UserModule());
-    //this.register('post', new PostModule());
+    this.register('xhs', new XHSModule());
     this.register('database', new DatabaseModule());
     this.register('common', new CommonModule());
 

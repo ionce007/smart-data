@@ -18,7 +18,7 @@ export async function loggerMiddleware(req, context) {
   
   context.log = {
     startTime,
-    requestId: `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+    requestId: `req_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`
   };
   
   console.log(`[${new Date().toISOString()}] ${req.method} ${req.url} - Started`);
