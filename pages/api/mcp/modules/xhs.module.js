@@ -43,10 +43,7 @@ export class XHSModule extends BaseModule {
                 type: 'object',
                 required: ['keys'],
                 properties: {
-                    keys: {
-                        type: 'string',
-                        description: '关键词列表,不超过150个,多个关键词之间用,分隔'
-                    },
+                    keys: { type: 'string', description: '关键词列表,不超过150个,多个关键词之间用,分隔' },
                 },
                 description: '获取关键词匹配词库信息'
             },

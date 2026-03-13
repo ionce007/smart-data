@@ -36,7 +36,7 @@ export default function MCPStatusIndicator() {
         checkStatus();
 
         // 每30秒检查一次
-        intervalId = setInterval(checkStatus, 180*1000);
+        intervalId = setInterval(checkStatus, 180 * 1000);
 
         return () => {
             mounted = false;
@@ -62,7 +62,7 @@ export default function MCPStatusIndicator() {
                 return 'MCP: 检测中...';
         }
     };
-//{/*style={{ position: 'fixed', top: 16, right: 300, background: getStatusColor(), color: 'white', padding: '8px 12px', borderRadius: '20px', fontSize: 12, fontFamily: 'monospace', zIndex: 11, boxShadow: '0 2px 5px rgba(0,0,0,0.2)', cursor: 'pointer' }}*/}
+    //{/*style={{ position: 'fixed', top: 16, right: 300, background: getStatusColor(), color: 'white', padding: '8px 12px', borderRadius: '20px', fontSize: 12, fontFamily: 'monospace', zIndex: 11, boxShadow: '0 2px 5px rgba(0,0,0,0.2)', cursor: 'pointer' }}*/}
     return (
         <div
             style={{ background: getStatusColor(), color: 'white', padding: '8px 12px', borderRadius: '20px', fontSize: 12, fontFamily: 'monospace', boxShadow: '0 2px 5px rgba(0,0,0,0.2)', cursor: 'pointer' }}

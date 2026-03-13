@@ -20,8 +20,8 @@ module.exports = {
 const path = require('path');
 
 module.exports = {
-  'config': path.resolve('config', 'config.js'),  // 确保指向正确的配置文件
-  'models-path': path.resolve('models'),
-  'seeders-path': path.resolve('seeders'),
-  'migrations-path': path.resolve('migrations')
+    'config': path.resolve('config', 'config.js'),  // 确保指向正确的配置文件
+    'models-path': path.resolve('models'),
+    'seeders-path': path.resolve('seeders'),
+    'migrations-path': path.resolve('migrations')
 };

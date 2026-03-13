@@ -2,6 +2,6 @@
 import { loggerMiddleware } from './logger';
 
 export const middleware = [
-  loggerMiddleware,
-  // 其他中间件...
+    loggerMiddleware,
+    // 其他中间件...
 ];

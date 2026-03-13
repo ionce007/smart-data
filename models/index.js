@@ -11,32 +11,32 @@ const db = {};
 let sequelize;
 
 if (process.env.DB_TYPE === 'mssql') {
-  sequelize = new Sequelize({
-    dialect: 'mssql',
-    host: process.env.DB_HOST || 'localhost',
-    port: parseInt(process.env.DB_PORT) || 1433,
-    database: process.env.DB_NAME || 'testdb',
-    username: process.env.DB_USER || 'sa',
-    password: process.env.DB_PASSWORD || 'password',
-    databaseVersion: '10.50.1600', // SQL Server 2008 R2 的版本号
-    dialectOptions: {
-      options: {
-        encrypt: false,
-        trustServerCertificate: true,
-        enableArithAbort: true,
-        connectTimeout: 30000,
-        requestTimeout: 30000
-      }
-    },
-    logging: false,//console.log,
-    define: {
-      timestamps: true,
-      underscored: true
-    }
-  });
+    sequelize = new Sequelize({
+        dialect: 'mssql',
+        host: process.env.DB_HOST || 'localhost',
+        port: parseInt(process.env.DB_PORT) || 1433,
+        database: process.env.DB_NAME || 'testdb',
+        username: process.env.DB_USER || 'sa',
+        password: process.env.DB_PASSWORD || 'password',
+        databaseVersion: '10.50.1600', // SQL Server 2008 R2 的版本号
+        dialectOptions: {
+            options: {
+                encrypt: false,
+                trustServerCertificate: true,
+                enableArithAbort: true,
+                connectTimeout: 30000,
+                requestTimeout: 30000
+            }
+        },
+        logging: false,//console.log,
+        define: {
+            timestamps: true,
+            underscored: true
+        }
+    });
 } else {
-  const config = require('../config/sequelize.js');
-  sequelize = new Sequelize(config);
+    const config = require('../config/sequelize.js');
+    sequelize = new Sequelize(config);
 }
 
 // 手动导入模型（不自动加载）

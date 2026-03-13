@@ -2,9 +2,10 @@
 const EventEmitter = require('events');
 //const { v4: uuidv4 } = require('uuid');
 const JSONRPC = require('../protocol/jsonrpc');
-const UserTools = require('../tools/user-tools');
-const PostTools = require('../tools/post-tools');
-const DatabaseTools = require('../tools/db-tools');
+const XHSools = require('../tools/xhs-tools');
+//const UserTools = require('../tools/user-tools');
+//const PostTools = require('../tools/post-tools');
+//const DatabaseTools = require('../tools/db-tools');
 const SSETransport = require('../protocol/sse-transport');
 import { v4 as uuidv4 } from 'uuid';
 /**
@@ -14,7 +15,6 @@ import { v4 as uuidv4 } from 'uuid';
 class MCPServer extends EventEmitter {
     constructor(options = {}) {
         super();
-
         this.name = options.name || 'MCP Server';
         this.version = options.version || '1.0.0';
         this.sseTransport = new SSETransport(options.sse);
@@ -41,14 +41,16 @@ class MCPServer extends EventEmitter {
 
     // 注册所有工具
     registerTools() {
-        const userTools = new UserTools();
+        /*const userTools = new UserTools();
         const postTools = new PostTools();
         const dbTools = new DatabaseTools();
 
         // 注册工具定义
         this.registerToolSet(userTools);
         this.registerToolSet(postTools);
-        this.registerToolSet(dbTools);
+        this.registerToolSet(dbTools);*/
+        const xhsTools = new XHSools();
+        this.registerToolSet(xhsTools);
     }
 
     // 注册工具集
@@ -89,9 +91,9 @@ class MCPServer extends EventEmitter {
 
     // 处理SSE连接
     handleSSEConnection(req, res) {
-        const clientId = uuidv4(); //new Date().getTime() + ''; // uuidv4();
+        const clientId = uuidv4();
         this.sseTransport.handleConnection(req, res, clientId);
-
+        console.log('sse.00');
         // 发送初始化信息
         this.sseTransport.sendMessage(clientId, {
             jsonrpc: '2.0',
@@ -112,10 +114,7 @@ class MCPServer extends EventEmitter {
         const { clientId } = req.query;
 
         if (!clientId || !this.sessions.has(clientId)) {
-            return res.status(400).json(JSONRPC.createError({
-                code: -32000,
-                message: 'Invalid or expired client ID'
-            }));
+            return res.status(400).json(JSONRPC.createError({ code: -32000, message: 'Invalid or expired client ID' }));
         }
 
         try {

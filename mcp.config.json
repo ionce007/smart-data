@@ -1,39 +1,39 @@
 {
-  "mcpServers": {
-    "nextjs-sequelize-mcp": {
-      "name": "Next.js Sequelize MCP Server",
-      "version": "1.0.0",
-      "description": "MCP server for Next.js + Sequelize database operations",
-      "transport": {
-        "sse": {
-          "endpoint": "/api/mcp/sse",
-          "messagesEndpoint": "/api/mcp/messages",
-          "port": 3000
-        },
-        "http": {
-          "endpoint": "/api/mcp/http",
-          "port": 3000
+    "mcpServers": {
+        "nextjs-sequelize-mcp": {
+            "name": "Next.js Sequelize MCP Server",
+            "version": "1.0.0",
+            "description": "MCP server for Next.js + Sequelize database operations",
+            "transport": {
+                "sse": {
+                    "endpoint": "/api/mcp/sse",
+                    "messagesEndpoint": "/api/mcp/messages",
+                    "port": 3000
+                },
+                "http": {
+                    "endpoint": "/api/mcp/http",
+                    "port": 3000
+                }
+            },
+            "tools": [
+                "user.list",
+                "user.get",
+                "user.create",
+                "user.update",
+                "user.delete",
+                "post.list",
+                "post.get",
+                "post.create",
+                "post.update",
+                "post.delete",
+                "db.query",
+                "db.stats"
+            ],
+            "capabilities": {
+                "streaming": true,
+                "functionCalling": true,
+                "contextWindow": 4096
+            }
         }
-      },
-      "tools": [
-        "user.list",
-        "user.get",
-        "user.create",
-        "user.update",
-        "user.delete",
-        "post.list",
-        "post.get",
-        "post.create",
-        "post.update",
-        "post.delete",
-        "db.query",
-        "db.stats"
-      ],
-      "capabilities": {
-        "streaming": true,
-        "functionCalling": true,
-        "contextWindow": 4096
-      }
     }
-  }
 }

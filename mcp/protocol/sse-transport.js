@@ -18,12 +18,20 @@ class SSETransport extends EventEmitter {
     handleConnection(req, res, clientId) {
         // 设置SSE headers
         res.writeHead(200, {
-            'Content-Type': 'text/event-stream',
+            'Content-Type': 'text/event-stream; charset=utf-8',
             'Cache-Control': 'no-cache',
             'Connection': 'keep-alive',
             'Access-Control-Allow-Origin': '*',
             'X-Accel-Buffering': 'no' // 禁用Nginx缓冲
         });
+
+        console.log(`sse.02`)
+
+        const baseUrl = `${req.headers['x-forwarded-proto'] || 'http'}://${req.headers.host}`;
+        const messagesUrl = `${baseUrl}/api/mcp/messages?clientId=${clientId}`;
+
+        // 发送初始连接成功事件
+        this.sendEvent(res, 'endpoint', messagesUrl );
 
         // 发送初始连接成功事件
         this.sendEvent(res, 'connected', { clientId, timestamp: new Date().toISOString() });
@@ -60,18 +68,16 @@ class SSETransport extends EventEmitter {
 
     // 发送事件到指定客户端
     sendEvent(response, event, data) {
-        if (!response || response.writableEnded) {
-            return false;
-        }
+        console.log(`sse.04`)
+        if (!response || response.writableEnded) return false;
 
         try {
             const formattedData = typeof data === 'string' ? data : JSON.stringify(data);
 
-            if (event) {
-                response.write(`event: ${event}\n`);
-            }
+            if (event) response.write(`event: ${event}\n`);
             response.write(`data: ${formattedData}\n\n`);
-
+            // 强制刷新缓冲区
+            if (response.flush) response.flush();
             return true;
         } catch (error) {
             console.error('发送SSE事件失败:', error);
@@ -81,12 +87,11 @@ class SSETransport extends EventEmitter {
 
     // 发送JSON-RPC消息
     sendMessage(clientId, message) {
+
         const client = this.clients.get(clientId);
         if (!client) {
             // 客户端不存在，加入队列
-            if (!this.messageQueue.has(clientId)) {
-                this.messageQueue.set(clientId, []);
-            }
+            if (!this.messageQueue.has(clientId)) this.messageQueue.set(clientId, []);
             this.messageQueue.get(clientId).push(message);
             return false;
         }

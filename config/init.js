@@ -29,30 +29,30 @@ module.exports = initializeDatabase;
 */
 // lib/init.js
 const initializeDatabase = async () => {
-  // 检查是否在浏览器环境
-  if (typeof window !== 'undefined') {
-    console.log('浏览器环境，跳过数据库初始化');
-    return;
-  }
+    // 检查是否在浏览器环境
+    if (typeof window !== 'undefined') {
+        console.log('浏览器环境，跳过数据库初始化');
+        return;
+    }
 
-  try {
-    // 动态导入 Node.js 模块
-    const db = await import('../models');
+    try {
+        // 动态导入 Node.js 模块
+        const db = await import('../models');
 
-    console.log('开始同步数据库...');
-    await db.sequelize.authenticate();
-    console.log('✅ 数据库连接成功');
-    await db.sequelize.sync({ force: false, alter: false });
-    //await db.sequelize.sync();
-    console.log('✅ 数据库同步完成');
-  } catch (error) {
-    console.error('❌ 数据库初始化失败:', error);
-  }
+        console.log('开始同步数据库...');
+        await db.sequelize.authenticate();
+        console.log('✅ 数据库连接成功');
+        await db.sequelize.sync({ force: false, alter: false });
+        //await db.sequelize.sync();
+        console.log('✅ 数据库同步完成');
+    } catch (error) {
+        console.error('❌ 数据库初始化失败:', error);
+    }
 };
 
 // 只在服务器端执行
 if (typeof window === 'undefined') {
-  initializeDatabase();
+    initializeDatabase();
 }
 
 export default initializeDatabase;
