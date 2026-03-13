@@ -18,7 +18,7 @@ export default async function handler(req, res) {
     // 初始化MCP服务器
     if (!mcpServer) {
       //const { SSEMCPServer } = require('../../mcp/server/sse-server');
-      const { SSEMCPServer } = require('../../../mcp/server/sse-server');
+      const SSEMCPServer = require('../../../mcp/server/sse-server');
       mcpServer = new SSEMCPServer({
         port: process.env.MCP_PORT || 3000,
         name: process.env.MCP_SERVER_NAME || 'NextJS Sequelize MCP'

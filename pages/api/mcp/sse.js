@@ -15,14 +15,14 @@ export default async function handler(req, res) {
   try {
     // 初始化MCP服务器（如果未初始化）
     if (!mcpServer) {
-      const { SSEMCPServer } = require('../../../mcp/server/sse-server');
+      const SSEMCPServer = require('../../../mcp/server/sse-server');
       mcpServer = new SSEMCPServer({
         port: process.env.MCP_PORT || 3000,
         name: process.env.MCP_SERVER_NAME || 'NextJS Sequelize MCP',
         enableAuth: process.env.MCP_ENABLE_AUTH === 'true',
         apiKey: process.env.MCP_API_KEY
       });
-      
+
       // 不在这里启动HTTP服务器，只处理单个请求
       console.log('MCP服务器实例已创建');
     }
@@ -32,7 +32,7 @@ export default async function handler(req, res) {
     res.setHeader('Content-Type', 'text/event-stream');
     res.setHeader('Connection', 'keep-alive');
     res.setHeader('X-Accel-Buffering', 'no');
-    
+
     // 允许跨域（Cherry Studio需要）
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST');
@@ -40,7 +40,7 @@ export default async function handler(req, res) {
 
     // 处理SSE连接
     const clientId = mcpServer.mcpServer.handleSSEConnection(req, res);
-    
+
     // 发送endpoint事件（MCP协议要求）
     const baseUrl = process.env.MCP_BASE_URL || `http://${req.headers.host}`;
     res.write(`event: endpoint\n`);
